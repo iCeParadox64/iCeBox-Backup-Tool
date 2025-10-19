@@ -14,6 +14,8 @@ A free, ultra simple, no-nonsense tool for backing up your files locally, with e
 
 [**Download the latest release here**](https://github.com/iCeParadox64/iCeBox-Backup-Tool/releases/latest)
 
+If you make regular backups (which you should!) to the same drives, I recommend using a program like [AllDup](https://alldup.info/) to get rid of duplicates from older backups and save space.
+
 ## config.ini Guide
 
 This config file will be automatically generated when you run the program for the first time, and can be edited in any simple text editor.
@@ -27,5 +29,6 @@ This config file will be automatically generated when you run the program for th
 - `[ProgramsToKill]` - A list of programs that the script will automatically close before starting the backup, one program per line. Example list entries: `Discord.exe` / `OneDrive.exe` / `steam.exe`
 
 ____
+
 
 *Program icon by Freepik on Flaticon.com*
