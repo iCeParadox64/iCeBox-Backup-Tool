@@ -2,7 +2,6 @@
 
 #NoEnv
 SetBatchLines -1
-Menu, Tray, Icon, %A_ScriptDir%\iCeBox.ico
 ConfigFile := A_ScriptDir . "\config.ini"
 
 ; Variables to store window position
@@ -363,22 +362,40 @@ PerformBackup:
     }
     
     ; Copy all selected folders to backup location
+    FailedCopies := []
     Loop, % SelectedFolders.Length() {
         SourceFolder := SelectedFolders[A_Index]
         FolderName := SubStr(SourceFolder, InStr(SourceFolder, "\", false, 0) + 1)
         DestFolder := BackupFolderPath . "\" . FolderName
         
-        ErrorCount := CopyFilesAndFolders(SourceFolder . "\*.*", DestFolder)
-        if (ErrorCount != 0)
-            MsgBox %ErrorCount% files/folders could not be copied from %SourceFolder%.
+        ErrorCount := CopyFilesAndFolders(SourceFolder . "\*.*", DestFolder, FailedCopies)
+    }
+    
+    ; Write failed copies to log file if there were any errors
+    if (FailedCopies.Length() > 0) {
+        LogFile := BackupFolderPath . "\log.txt"
+        FileAppend, The following files/folders could not be copied:`n`n, %LogFile%
+        Loop, % FailedCopies.Length() {
+            FailedPath := FailedCopies[A_Index]
+            FileAppend, %FailedPath%`n, %LogFile%
+        }
     }
     
     ; Check if SilentBackup is enabled
-    if (SilentBackup != "true") {
-        MsgBox, Backup completed successfully!
+	if (SilentBackup != "true") {
+
+    ; Check if the log file exists
+    if FileExist(LogFile) {
+        ; log.txt exists
+        MsgBox, 48, Backup Status, Backup completed with errors. See log.txt in the backup directory for details.
     } else {
-        ExitApp
+        ; log.txt does not exist
+        MsgBox, 64, Backup Status, Backup completed successfully!
     }
+} else {
+    ; SilentBackup is true, so just exit
+    ExitApp
+}
 return
 
 GuiMove:
@@ -399,7 +416,7 @@ GetFolderSize(FolderPath) {
     return Size
 }
 
-CopyFilesAndFolders(SourcePattern, DestinationFolder, DoOverwrite = false)
+CopyFilesAndFolders(SourcePattern, DestinationFolder, ByRef FailedCopies, DoOverwrite = false)
 {
     FileCreateDir, %DestinationFolder%
     FileCopy, %SourcePattern%, %DestinationFolder%, %DoOverwrite%
@@ -408,9 +425,10 @@ CopyFilesAndFolders(SourcePattern, DestinationFolder, DoOverwrite = false)
     {
         DestPath := DestinationFolder . "\" . A_LoopFileName
         FileCopyDir, %A_LoopFileFullPath%, %DestPath%, %DoOverwrite%
-        ErrorCount += ErrorLevel
-        if ErrorLevel
-            MsgBox Could not copy %A_LoopFileFullPath% into %DestinationFolder%.
+        if (ErrorLevel) {
+            ErrorCount += ErrorLevel
+            FailedCopies.Push(A_LoopFileFullPath)
+        }
     }
     return ErrorCount
 }
