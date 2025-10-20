@@ -11,6 +11,7 @@ A free, ultra simple, no-nonsense tool for backing up your files locally, with e
 - All backups are dated with a YYYY-MM-DD prefix for easy sorting
 - Configure one-click backups that can even run silently in the background
 - No built-in backup scheduling, but still perfect for setting up automatic backups with something like Task Scheduler
+- Failed backups recorded in a log.txt file in the backup directory
 
 [**Download the latest release here**](https://github.com/iCeParadox64/iCeBox-Backup-Tool/releases/latest)
 
@@ -32,3 +33,4 @@ ____
 
 
 *Program icon by Freepik on Flaticon.com*
+
