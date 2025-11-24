@@ -34,3 +34,10 @@ ____
 
 *Program icon by Freepik on Flaticon.com*
 
+____
+
+### To-Do
+
+- Add an alternate copy method for retrying failed copies.
+- Add an option for only allowing a certain number of backups with the same name. If this number is exceeded, the oldest backup (by folder name) is deleted.
+- Compression support using 7-Zip. Will have options for compression level and pre-compression temp directory (default %LocalAppData%\Temp)
